@@ -1,0 +1,87 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>com.cloudera.joshelser</groupId>
+  <artifactId>knox-hbasejars-exemplar</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+   <properties>
+     <maven.compiler.source>1.8</maven.compiler.source>
+     <maven.compiler.target>1.8</maven.compiler.target>
+   </properties>
+  <dependencies>
+    <!-- NoSQL client for ODX -->
+    <!--dependency>
+      <groupId>com.cloudera.odx</groupId>
+      <artifactId>nosql-client</artifactId>
+      <version>1.0.0</version>
+    </dependency-->
+    <dependency>
+      <groupId>org.apache.hbase</groupId>
+      <artifactId>hbase-shaded-client</artifactId>
+      <version>2.2.3.7.2.0.0-SNAPSHOT</version>
+    </dependency>
+    <!-- Dependencies for NoSQL client which might be provided by platform -->
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-api</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-log4j12</artifactId>
+      <version>1.7.30</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.htrace</groupId>
+      <artifactId>htrace-core4</artifactId>
+      <version>4.2.0-incubating</version>
+    </dependency>
+    <dependency>
+      <groupId>commons-logging</groupId>
+      <artifactId>commons-logging</artifactId>
+      <version>1.2</version>
+    </dependency>
+    <!-- SQL client for ODX
+    <dependency>
+      <groupId>com.cloudera.odx</groupId>
+      <artifactId>sql-client</artifactId>
+      <version>1.0.0</version>
+    </dependency> -->
+  </dependencies>
+  <build>
+    <plugins>
+      <!-- Localize dependencies to make maven-exec-plugin usage easier -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.1.2</version>
+        <executions>
+          <execution>
+            <id>copy-nosql-dependencies</id>
+            <phase>package</phase>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <configuration>
+              <includeArtifactIds>hbase-shaded-client,slf4j-api,slf4j-log4j12,log4j,htrace-core4,commons-logging</includeArtifactIds>
+              <outputDirectory>${project.build.directory}/nosql-libs/</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>false</overWriteSnapshots>
+              <overWriteIfNewer>true</overWriteIfNewer>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+  <repositories>
+    <!-- Define our ODX repository; this would be given to us by ODX itself -->
+    <repository>
+      <id>local-knox</id>
+      <url>https://localhost:8443/gateway/sandbox/hbase/maven/</url>
+      <name>Local knox</name>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+    </repository>
+   </repositories>
+</project>
